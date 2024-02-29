@@ -100,6 +100,16 @@ export const getSingleRecipeById = async (recipeId: number): Promise<QueryResult
 };
 
 /**
+ * Remove single recipe by id from database
+ * @param {number} recipeId Recipe id
+ * @returns {Promise<QueryResult>} Query result
+ */
+export const removeRecipe = async (recipeId: number): Promise<QueryResult> => {
+  const sql = 'DELETE FROM recipes WHERE recipeid = $1';
+  return await query(sql, [recipeId]);
+}
+
+/**
  * Update recipe in database
  * @param {number} recipeId Recipe id
  * @param {string} recipeName Name of recipe

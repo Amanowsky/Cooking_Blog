@@ -52,6 +52,19 @@ describe('ActionButton.vue', () => {
       expect(findButton().classes()).toContain('rounded-[6px]');
       expect(findButton().classes()).toContain('md:rounded-[8px]');
     });
+
+    it('should set classes based on prop.isWider', async () => {
+      createComponent({
+        props: {
+          isWider: true
+        }
+      });
+
+      expect(findButton().classes()).toContain('md:w-[160px]');
+      expect(findButton().classes()).toContain('w-[100px]');
+      await wrapper.setProps({isWider: false});
+      expect(findButton().classes()).toContain('w-auto');
+    });
   });
 
   describe('Emits', () => {

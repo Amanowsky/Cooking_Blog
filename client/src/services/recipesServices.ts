@@ -52,6 +52,20 @@ export const saveRecipe = async (recipeToSave: any, token: string): Promise<Reci
 };
 
 /**
+ * Remove recipe with id `recipeId`
+ * @param {number} recipeId Recipe id
+ * @param {string} token Token
+ * @returns {Promise<Recipe>} Recipe id
+ */
+export const removeRecipe = async (recipeId: number, token: string): Promise<void> => {
+  const response = await axios.delete(`${RECIPE_API_URL}/removeRecipe/${recipeId}`,
+    {headers: { 'x-access-token': token }});
+
+  const data = response.data;
+  return data;
+};
+
+/**
  * Update recipe
  * @param {Object} recipeToUpdate Recipe to update
  * @param {string} token Token

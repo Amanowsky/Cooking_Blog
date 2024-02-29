@@ -10,6 +10,7 @@ import {
   getDifficultLevels,
   getNewestRecipes,
   saveRecipe,
+  removeRecipe,
   uploadRecipeImage,
   getSingleRecipe,
   getRecipesPage,
@@ -151,6 +152,31 @@ describe('recipesServices.ts', () => {
       const resultFn = async () => await saveRecipe(testRecipe, token);
       expect(resultFn).rejects.toThrowError();
     });
+  });
+
+  describe('removeRecipe', () => {
+    it('should return recipeId if input is correct', async () => {
+      const recipeId = 1;
+      const token = 'testToken';
+      const response = 1;
+
+      mock
+        .onDelete(`${RECIPE_API_URL}/removeRecipe/${recipeId}`)
+        .reply(201, response);
+      const result = await removeRecipe(recipeId, token);
+      expect(result).toBe(1);
+    });
+
+    it('should return an Error if input is incorrect', async () => {
+      const recipeId = 1;
+      const token = 'testToken';
+
+      mock
+        .onDelete(`${RECIPE_API_URL}/removeRecipe/${recipeId}`)
+        .reply(401);
+      const resultFn = async () => await removeRecipe(recipeId, token);
+      expect(resultFn).rejects.toThrowError();
+    })
   });
 
   describe('uploadRecipeImage', () => {

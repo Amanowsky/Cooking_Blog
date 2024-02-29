@@ -32,7 +32,7 @@
 
               <div v-if="showExtraControls" class="flex gap-x-[12px] xl:gap-x-[14px]">
                 <ActionButton @click-action="editRecipe()" is-colored>Edit</ActionButton>
-                <ActionButton @click-action="deleteRecipe()">Delete</ActionButton>
+                <ActionButton onclick="deletionPopup.showModal()">Delete</ActionButton>
               </div>
             </div>
 
@@ -77,7 +77,7 @@
         </main>
       </div>
     </div>
-
+    <ActionPopup popup-id="deletionPopup" :buttonFunction="deleteRecipe" :actionButtonText="'Yes'">Do you want to delete this recipe</ActionPopup>
     <ClassicFooter />
   </ViewWrapper>
 </template>
@@ -90,6 +90,7 @@ import { useUserStore } from '@/stores/userStore';
 import Recipe from '@/models/Recipe';
 import { STATIC_IMAGES_URL } from '@/const/commonConst';
 import testRecipeImage from '@/assets/images/TestRecipeImage.jpg';
+import { removeRecipe } from '@/services/recipesServices';
 
 import ViewWrapper from '@/components/layout/ViewWrapper.vue';
 import NavigationBar from '@/components/common/NavigationBar.vue';
@@ -99,6 +100,7 @@ import StarIcon from '@/components/icons/common/StarIcon.vue';
 import HeartIcon from '@/components/icons/common/HeartIcon.vue';
 import IngredientsCard from '@/components/cards/IngredientsCard.vue';
 import StepCard from '@/components/cards/StepCard.vue';
+import ActionPopup from '@/components/modals/ActionPopup.vue';
 
 const router = useRouter();
 const recipesStore = useRecipesStore();
@@ -128,9 +130,15 @@ const editRecipe = (): void => {
 };
 
 /** Delete current recipe */
-const deleteRecipe = (): void => {
-  console.log('Delete recipe');
+const deleteRecipe = async (): Promise<void> => {
+  const recipeId = recipe.value.recipeId;
+  const token = userStore.token;
+  await removeRecipe(recipeId, token);
+  recipesStore.userRecipes = recipesStore.userRecipes.filter(el => el.recipeId != recipeId);
+  recipesStore.exploreRecipes = recipesStore.exploreRecipes.filter(el => el.recipeId != recipeId);
+  router.push({ name: 'myRecipes'});
 };
+
 
 /** Add to favorite or remove from favorite */
 const addRemoveFavorite = (): void => {
@@ -141,4 +149,5 @@ const addRemoveFavorite = (): void => {
 const likeDislike = (): void => {
   console.log('Like or dislike recipe');
 };
+
 </script>

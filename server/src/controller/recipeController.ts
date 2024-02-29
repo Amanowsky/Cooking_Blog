@@ -11,6 +11,7 @@ import {
   getDifficultLevels,
   getLastRecipeId,
   createRecipe,
+  removeRecipe,
   getSingleRecipeById,
   getRecipesPage,
   getRecipesPageUser,
@@ -167,7 +168,7 @@ export const createRecipeAction = async (req: Request, res: Response): Promise<v
       );
 
       return;
-    }
+    };
 
     const newRecipeId = (await getLastRecipeId()).rows[0].max + 1;
 
@@ -179,7 +180,31 @@ export const createRecipeAction = async (req: Request, res: Response): Promise<v
     res.status(StatusCodesEnum.OK).json(RecipeMapper.mapObjectToRecipe(createdRecipe));
   } catch (err) {
     res.status(StatusCodesEnum.ServerError).json(new RequestError(ErrorMessagesEnum.ServerError, err));
-  }
+  };
+};
+
+/**
+ * Remove recipe action
+ * @param {Request} req Request
+ * @param {Response} res Response
+ */
+export const removeRecipeAction = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { recipeId } = req.params;
+
+    if (!recipeId) {
+      res.status(StatusCodesEnum.BadRequest).json(
+        new RequestError(ErrorMessagesEnum.ValidationError, 'All inputs are required !')
+      );
+
+      return;
+    };
+
+    await removeRecipe(Number(recipeId));
+    res.status(StatusCodesEnum.OK).json(recipeId);
+  } catch (err) {
+    res.status(StatusCodesEnum.ServerError).json(new RequestError(ErrorMessagesEnum.ServerError, err));
+  };
 };
 
 /**
